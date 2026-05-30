@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr" data-i18n-title-key="legal.title">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SafeR — Mentions légales</title>
+  <meta name="description" content="Mentions légales, CGU, politique de confidentialité et gestion des cookies SafeR.">
+  <meta property="og:title" content="SafeR — Mentions légales">
+  <meta property="og:description" content="Informations légales, conditions et confidentialité.">
+  <meta property="og:image" content="https://safer.ci/assets/og-image.svg">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="canonical" href="https://safer.ci/legal.html">
+  <link rel="stylesheet" href="/styles.css?v=1">
+</head>
+<body data-page="legal">
+  <div id="nav-mount"></div>
+
+  <main>
+    <section style="padding:48px 0 24px">
+      <div class="container section-head">
+        <h1 data-i18n="legal.title">Mentions légales</h1>
+        <p data-i18n="legal.lead">Informations légales, conditions et confidentialité.</p>
+        <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:16px">
+          <a class="btn btn-ghost btn-sm" href="#mentions" data-i18n="legal.mentions">Mentions légales</a>
+          <a class="btn btn-ghost btn-sm" href="#cgu" data-i18n="legal.cgu">CGU</a>
+          <a class="btn btn-ghost btn-sm" href="#privacy" data-i18n="legal.privacy">Confidentialité</a>
+          <a class="btn btn-ghost btn-sm" href="#cookies" data-i18n="legal.cookies">Cookies</a>
+        </div>
+      </div>
+    </section>
+
+    <section style="padding-top:0">
+      <div class="container" style="max-width:840px">
+        <article id="mentions" class="legal-section">
+          <h2 data-i18n="legal.mentions">Mentions légales</h2>
+          <p><strong>Éditeur :</strong> RADIANT Assistance Security (SafeR est une sous-marque).<br>
+            <span id="legalCeo"></span><br>
+            <span id="legalAddress"></span><br>
+            <span id="legalPhone"></span> · <span id="legalEmail"></span>
+          </p>
+          <p>
+            RCCM : <code>CI-ABJ-2019-B-XXXXX</code> · NCC : <code>XXXXXXX</code> · Capital social : <code>XX XXX XXX FCFA</code><br>
+            <em>Placeholders — à remplacer par les valeurs réelles avant publication.</em>
+          </p>
+          <p><strong>Hébergement :</strong> <span id="legalHost"></span></p>
+          <p><strong>Directeur de la publication :</strong> <span id="legalCeo2"></span></p>
+        </article>
+
+        <article id="cgu" class="legal-section" style="margin-top:48px">
+          <h2 data-i18n="legal.cgu">Conditions générales d'utilisation</h2>
+          <p>L'utilisation du site <span id="legalDomain"></span> implique l'acceptation pleine et entière des présentes CGU. SafeR se réserve le droit de modifier ces conditions à tout moment.</p>
+          <h3>Propriété intellectuelle</h3>
+          <p>L'ensemble des contenus (textes, images, marques, logos) présents sur le site sont la propriété exclusive de SafeR, RADIANT Assistance Security ou KOGNITIV Technologies, sauf mention contraire. Toute reproduction sans accord préalable écrit est interdite.</p>
+          <h3>Responsabilité</h3>
+          <p>SafeR met tout en œuvre pour assurer l'exactitude des informations diffusées mais ne saurait être tenu responsable d'éventuelles omissions ou inexactitudes.</p>
+          <h3>Liens externes</h3>
+          <p>Le site peut contenir des liens vers des sites tiers. SafeR n'est pas responsable du contenu de ces sites.</p>
+        </article>
+
+        <article id="privacy" class="legal-section" style="margin-top:48px">
+          <h2 data-i18n="legal.privacy">Politique de confidentialité</h2>
+          <p>Conformément à la loi ivoirienne n°2013-450 du 19 juin 2013 relative à la protection des données à caractère personnel, vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition aux données vous concernant.</p>
+          <h3>Données collectées</h3>
+          <p>Lors de l'utilisation du formulaire de contact ou de demande de devis, nous collectons : nom, email, téléphone, type de site, message libre. Ces données sont stockées dans une base Supabase (hébergement Europe) et ne sont utilisées que pour répondre à votre demande.</p>
+          <h3>Durée de conservation</h3>
+          <p>Vos données sont conservées 3 ans après votre dernière interaction, puis supprimées automatiquement.</p>
+          <h3>Exercice des droits</h3>
+          <p>Pour exercer vos droits : <a id="legalPrivacyMail" href="#"></a>.</p>
+        </article>
+
+        <article id="cookies" class="legal-section" style="margin-top:48px">
+          <h2 data-i18n="legal.cookies">Cookies</h2>
+          <p>Le site utilise deux catégories de cookies :</p>
+          <ul>
+            <li><strong>Essentiels</strong> — mémorisation de votre choix de langue (FR/EN), de votre consentement cookies et du panier. Ces cookies sont nécessaires au fonctionnement du site.</li>
+            <li><strong>Mesure d'audience anonyme</strong> — si vous acceptez la bannière, nous chargeons Plausible (ou Google Analytics si configuré). Aucune donnée personnelle identifiable n'est collectée.</li>
+          </ul>
+          <p>Vous pouvez modifier votre choix à tout moment en effaçant le cookie <code>safer_cookie_consent</code> dans votre navigateur, puis en rechargeant la page.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-mount"></div>
+
+  <script src="/js/config.js?v=1"></script>
+  <script src="/js/i18n.js?v=1"></script>
+  <script src="/js/icons.js?v=1"></script>
+  <script src="/js/site-chrome.js?v=1"></script>
+  <script>
+    (function () {
+      const C = window.SAFER_CONFIG;
+      const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+      set('legalCeo', `${C.company.legalName} — ${C.company.ceo}, ${C.company.ceoRole}`);
+      set('legalCeo2', `${C.company.ceo}, ${C.company.ceoRole}`);
+      set('legalAddress', C.contact.address.full);
+      set('legalPhone', C.contact.phoneDisplay);
+      set('legalEmail', C.contact.emails.general);
+      set('legalHost', C.hosting.provider);
+      set('legalDomain', C.company.domain);
+      const pm = document.getElementById('legalPrivacyMail');
+      if (pm) { pm.href = C.contact.mailto.privacy; pm.textContent = C.contact.emails.privacy; }
+    })();
+  </script>
+</body>
+</html>

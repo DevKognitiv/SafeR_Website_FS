@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="fr" data-i18n-title-key="contact.title">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SafeR — Contact & devis</title>
+  <meta name="description" content="Contactez SafeR : devis, questions, intervention. Réponse sous 24h ouvrées.">
+  <meta property="og:title" content="SafeR — Contact">
+  <meta property="og:description" content="Un expert SafeR vous rappelle sous 24h ouvrées.">
+  <meta property="og:image" content="https://safer.ci/assets/og-image.svg">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="canonical" href="https://safer.ci/contact.html">
+  <link rel="stylesheet" href="/styles.css?v=1">
+</head>
+<body data-page="contact">
+  <div id="nav-mount"></div>
+
+  <main>
+    <section style="padding:64px 0 32px">
+      <div class="container section-head">
+        <span class="eyebrow" data-i18n="nav.contact">Contact</span>
+        <h1 data-i18n="contact.title">Contactez-nous</h1>
+        <p data-i18n="contact.lead">Une question, un devis, une intervention ? On vous répond sous 24h ouvrées.</p>
+      </div>
+    </section>
+
+    <section style="padding-top:0">
+      <div class="container" style="display:grid;grid-template-columns:2fr 1fr;gap:48px">
+        <div>
+          <div id="formMsg"></div>
+          <form id="contactForm" class="card" novalidate>
+            <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+            <div class="field-grid">
+              <div class="field">
+                <label data-i18n="contact.form.name">Nom complet</label>
+                <input type="text" name="name" required>
+              </div>
+              <div class="field">
+                <label data-i18n="contact.form.email">Email</label>
+                <input type="email" name="email" required>
+              </div>
+            </div>
+            <div class="field-grid">
+              <div class="field">
+                <label data-i18n="contact.form.phone">Téléphone</label>
+                <input type="tel" name="phone">
+              </div>
+              <div class="field">
+                <label data-i18n="contact.form.subject">Sujet</label>
+                <select name="subject">
+                  <option value="quote">Demande de devis</option>
+                  <option value="support">Support technique</option>
+                  <option value="partnership">Partenariat</option>
+                  <option value="other">Autre</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label data-i18n="contact.form.message">Votre message</label>
+              <textarea name="message" required></textarea>
+            </div>
+            <button class="btn btn-primary" type="submit" data-i18n="contact.form.send">Envoyer</button>
+          </form>
+        </div>
+        <aside>
+          <div class="card">
+            <h3 data-i18n="contact.side.title">Autres canaux</h3>
+            <p style="color:var(--ink-soft);margin-top:12px"><strong data-i18n="contact.side.address">Adresse</strong><br id="address-line">
+              <span id="contactAddress"></span>
+            </p>
+            <p style="color:var(--ink-soft)"><strong data-i18n="contact.side.hours">Horaires</strong><br>
+              <span data-i18n="contact.side.hours.body">Lun–Sam 8h–18h · Urgences 24/7</span>
+            </p>
+            <p><a id="contactPhone" href="#" class="btn btn-ghost btn-sm">Téléphone</a></p>
+            <p><a id="contactWa" href="#" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">WhatsApp</a></p>
+            <p><a id="contactMail" href="#" class="btn btn-ghost btn-sm">Email</a></p>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-mount"></div>
+
+  <script src="/js/config.js?v=1"></script>
+  <script src="/js/i18n.js?v=1"></script>
+  <script src="/js/icons.js?v=1"></script>
+  <script src="/js/site-chrome.js?v=1"></script>
+  <script src="/js/supabase.js?v=1"></script>
+  <script>
+    (function () {
+      const C = window.SAFER_CONFIG;
+      // Hydrate sidebar
+      document.getElementById('contactAddress').textContent = C.contact.address.short;
+      const phoneEl = document.getElementById('contactPhone');
+      phoneEl.href = C.contact.telLink;
+      phoneEl.textContent = C.contact.phoneDisplay;
+      const waEl = document.getElementById('contactWa');
+      waEl.href = C.contact.whatsappLink;
+      waEl.textContent = 'WhatsApp';
+      const mailEl = document.getElementById('contactMail');
+      mailEl.href = C.contact.mailto.general;
+      mailEl.textContent = C.contact.emails.general;
+
+      // Pre-fill subject from ?plan=xyz
+      const params = new URLSearchParams(location.search);
+      if (params.get('plan')) {
+        const subj = document.querySelector('select[name="subject"]');
+        subj.value = 'quote';
+        const msg = document.querySelector('textarea[name="message"]');
+        msg.value = `Je suis intéressé(e) par le forfait ${params.get('plan')}.\n\n`;
+      }
+
+      // Submit
+      const form = document.getElementById('contactForm');
+      const msg = document.getElementById('formMsg');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        msg.innerHTML = '';
+        const submit = form.querySelector('[type="submit"]');
+        submit.disabled = true;
+        const orig = submit.textContent;
+        submit.textContent = window.SaferChrome.t('contact.form.sending', document.documentElement.lang);
+        const payload = Object.fromEntries(new FormData(form).entries());
+        payload.lang = document.documentElement.lang || 'fr';
+        payload.source = 'contact.html';
+        const res = await window.SaferSupabase.submitLead({ kind: 'contact', payload });
+        submit.disabled = false;
+        submit.textContent = orig;
+        if (res.ok) {
+          msg.innerHTML = `<div class="form-msg ok">${window.SaferChrome.t('contact.form.ok', document.documentElement.lang)}</div>`;
+          form.reset();
+        } else {
+          msg.innerHTML = `<div class="form-msg err">${window.SaferChrome.t('contact.form.err', document.documentElement.lang)} <small>(${res.error || 'unknown'})</small></div>`;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

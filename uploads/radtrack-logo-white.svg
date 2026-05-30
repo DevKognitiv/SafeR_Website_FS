@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 56" role="img" aria-label="RADTrack">
+  <circle cx="28" cy="28" r="18" fill="#F5A800"/>
+  <circle cx="28" cy="28" r="6" fill="#fff"/>
+  <text x="56" y="34" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="22" fill="#ffffff" letter-spacing="0.5">RADTrack</text>
+  <text x="56" y="48" font-family="Arial,Helvetica,sans-serif" font-weight="500" font-size="9" fill="#C7CBE0" letter-spacing="2">BY SAFER</text>
+</svg>

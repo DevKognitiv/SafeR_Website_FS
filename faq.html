@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="fr" data-i18n-title-key="faq.title">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SafeR — FAQ</title>
+  <meta name="description" content="Questions fréquentes sur SafeR : installation, supervision, application mobile, tarifs, SAV.">
+  <meta property="og:title" content="SafeR — Questions fréquentes">
+  <meta property="og:description" content="Tout ce que vous devez savoir avant de vous équiper.">
+  <meta property="og:image" content="https://safer.ci/assets/og-image.svg">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="canonical" href="https://safer.ci/faq.html">
+  <link rel="stylesheet" href="/styles.css?v=1">
+  <style>
+    details.faq { background:#fff;border:1px solid var(--divider);border-radius:var(--r-md);padding:16px 20px;margin-bottom:12px; }
+    details.faq[open] { box-shadow: var(--sh-sm); }
+    details.faq > summary { cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center; }
+    details.faq > summary::-webkit-details-marker { display:none; }
+    details.faq > summary::after { content:"+";font-size:24px;color:var(--safer-orange); }
+    details.faq[open] > summary::after { content:"−"; }
+    details.faq > p { color: var(--ink-soft); margin: 12px 0 0; }
+  </style>
+</head>
+<body data-page="faq">
+  <div id="nav-mount"></div>
+
+  <main>
+    <section style="padding:64px 0 32px">
+      <div class="container section-head">
+        <span class="eyebrow">FAQ</span>
+        <h1 data-i18n="faq.title">Questions fréquentes</h1>
+        <p data-i18n="faq.lead">Tout ce que vous devez savoir avant de vous équiper.</p>
+      </div>
+    </section>
+
+    <section style="padding-top:0">
+      <div class="container" style="max-width:840px">
+        <h2>Installation</h2>
+        <details class="faq"><summary>Combien de temps prend une installation type ?</summary><p>Pour une villa standard : une journée. Pour un appartement : 3–4h. L'équipe installe, configure et vous forme à l'application.</p></details>
+        <details class="faq"><summary>Faut-il refaire le câblage ?</summary><p>La grande majorité de notre matériel est sans fil (Wi-Fi, 4G, 868 MHz). Les caméras filaires utilisent du PoE — un seul câble par caméra suffit.</p></details>
+        <details class="faq"><summary>Que faire en cas de coupure d'électricité ?</summary><p>La centrale d'alarme dispose de 12h de batterie. Les caméras filaires sont protégées par un onduleur fourni avec le forfait Hypnoz et Flex.</p></details>
+
+        <h2 style="margin-top:48px">Supervision & intervention</h2>
+        <details class="faq"><summary>Qui surveille mes caméras ?</summary><p>La centrale SafeR à Abidjan, supervisée 24/7 par des agents formés RADIANT. Vos vidéos restent chiffrées : nous y accédons uniquement sur déclenchement d'alarme ou demande de votre part.</p></details>
+        <details class="faq"><summary>Que se passe-t-il en cas d'alarme ?</summary><p>1) Vous recevez une notification push. 2) Nos agents lèvent le doute par vidéo en moins de 60s. 3) Si l'alarme est confirmée, équipe d'intervention dépêchée sous 15 min en zone couverte.</p></details>
+        <details class="faq"><summary>Quelle est la zone d'intervention ?</summary><p>Abidjan + couronne (Cocody, Plateau, Marcory, Yopougon, Bingerville, Grand-Bassam). Hors zone, nous coordonnons avec nos partenaires locaux.</p></details>
+
+        <h2 style="margin-top:48px">Application & supervision</h2>
+        <details class="faq"><summary>L'application est-elle disponible sur iOS et Android ?</summary><p>Oui, les deux. iPhone iOS 14+ et Android 9+.</p></details>
+        <details class="faq"><summary>Puis-je donner accès à un proche ?</summary><p>Oui : invitations utilisateurs avec droits granulaires (caméras autorisées, plages horaires, capacité d'armer/désarmer l'alarme).</p></details>
+        <details class="faq"><summary>Combien de temps les vidéos sont-elles conservées ?</summary><p>30 jours en cloud chiffré (Smart'Zen et au-delà). Possibilité d'export et de conservation longue durée sur demande.</p></details>
+
+        <h2 style="margin-top:48px">Tarifs & engagement</h2>
+        <details class="faq"><summary>Y a-t-il une durée d'engagement ?</summary><p>Non, les forfaits sont sans engagement avec un préavis de résiliation de 30 jours.</p></details>
+        <details class="faq"><summary>Quels moyens de paiement acceptez-vous ?</summary><p>Orange Money, MTN MoMo, Wave, virement, Visa/Mastercard via notre intégration sécurisée.</p></details>
+
+        <h2 style="margin-top:48px">SAV</h2>
+        <details class="faq"><summary>Que faire en cas de panne ?</summary><p>Hotline 24/7 + WhatsApp + diagnostic à distance par notre équipe. Si un déplacement est nécessaire, intervention sous 48h ouvrées (24h en Hypnoz/Flex).</p></details>
+      </div>
+    </section>
+
+    <section style="background:var(--bg-soft)">
+      <div class="container" style="text-align:center;max-width:640px">
+        <h2>Vous n'avez pas trouvé votre réponse ?</h2>
+        <p style="color:var(--ink-soft)">Contactez-nous directement. On vous répond sous 24h.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px">
+          <a class="btn btn-primary" href="/contact.html" data-i18n="common.contact">Nous contacter</a>
+          <a class="btn btn-ghost" id="faqWhatsapp" href="#" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-mount"></div>
+
+  <script src="/js/config.js?v=1"></script>
+  <script src="/js/i18n.js?v=1"></script>
+  <script src="/js/icons.js?v=1"></script>
+  <script src="/js/site-chrome.js?v=1"></script>
+  <script>
+    document.getElementById('faqWhatsapp').href = window.SAFER_CONFIG.contact.whatsappLink;
+  </script>
+</body>
+</html>
