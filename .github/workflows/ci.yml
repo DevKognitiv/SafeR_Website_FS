@@ -15,44 +15,52 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Pre-install serve (so smoke-test doesn't race on first npx)
+        run: npm i -g serve@14
+
       - name: Syntax-check all JS
+        shell: bash
         run: |
-          set -e
+          set -euo pipefail
           fail=0
-          for f in $(find js api -name '*.js' -type f); do
-            if ! node --check "$f" 2>err.log; then
+          while IFS= read -r -d '' f; do
+            if node --check "$f" 2>err.log; then
+              echo "  OK: $f"
+            else
               echo "::error file=$f::Syntax error"
               cat err.log
               fail=1
-            else
-              echo "  OK: $f"
             fi
-          done
+          done < <(find js api -name '*.js' -type f -print0)
           exit $fail
 
       - name: Validate JSON files
+        shell: bash
         run: |
-          set -e
+          set -euo pipefail
           for f in vercel.json package.json; do
-            node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" && echo "  OK: $f"
+            node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))"
+            echo "  OK: $f"
           done
 
-      - name: Validate XML (sitemap)
+      - name: Validate sitemap.xml
+        shell: bash
         run: |
-          npx --yes xmllint sitemap.xml --noout 2>/dev/null || \
-            python3 -c "import xml.etree.ElementTree as ET; ET.parse('sitemap.xml'); print('  OK: sitemap.xml')"
+          set -euo pipefail
+          python3 -c "import xml.etree.ElementTree as ET; ET.parse('sitemap.xml')"
+          echo "  OK: sitemap.xml"
 
       - name: Check internal asset references resolve
+        shell: bash
         run: |
-          set -e
+          set -euo pipefail
           fail=0
           for html in *.html; do
-            # Extract referenced /js/*, /assets/*, /uploads/*, /styles.css paths and check they exist
-            refs=$(grep -oE '"/[^"]+\.(js|css|svg|png|webp)"' "$html" \
+            # Capture quoted refs to local files; strip ?query strings before checking on disk.
+            refs=$(grep -oE '"/[^"?]+\.(js|css|svg|png|webp)(\?[^"]*)?"' "$html" \
                    | tr -d '"' | sed 's/?.*//' | sort -u)
             for ref in $refs; do
-              local_path=".${ref}"
-              if [ ! -f "$local_path" ]; then
+              if [ ! -f ".${ref}" ]; then
                 echo "::error file=$html::References missing $ref"
                 fail=1
               fi
@@ -62,10 +70,27 @@ jobs:
           exit $fail
 
       - name: Smoke-test pages render via static server
+        shell: bash
         run: |
-          set -e
-          npx --yes serve -l 4173 . > /tmp/serve.log 2>&1 &
-          sleep 2
+          set -euo pipefail
+          serve -l 4173 . > /tmp/serve.log 2>&1 &
+          server_pid=$!
+          # Wait up to 30s for the server to actually answer.
+          for i in $(seq 1 60); do
+            if curl -fsS -o /dev/null "http://localhost:4173/"; then
+              echo "  Server ready after ${i} probes"
+              break
+            fi
+            sleep 0.5
+            if [ "$i" -eq 60 ]; then
+              echo "::error::Server failed to start in 30s"
+              echo "--- server log ---"
+              cat /tmp/serve.log
+              kill $server_pid 2>/dev/null || true
+              exit 1
+            fi
+          done
+
           fail=0
           for p in / /about.html /pricing.html /contact.html /faq.html /legal.html \
                    /solutions-residential.html /solutions-commercial.html \
@@ -80,4 +105,6 @@ jobs:
               echo "  200 OK: $p"
             fi
           done
+
+          kill $server_pid 2>/dev/null || true
           exit $fail
