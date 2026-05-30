@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Syntax-check all JS
+        run: |
+          set -e
+          fail=0
+          for f in $(find js api -name '*.js' -type f); do
+            if ! node --check "$f" 2>err.log; then
+              echo "::error file=$f::Syntax error"
+              cat err.log
+              fail=1
+            else
+              echo "  OK: $f"
+            fi
+          done
+          exit $fail
+
+      - name: Validate JSON files
+        run: |
+          set -e
+          for f in vercel.json package.json; do
+            node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" && echo "  OK: $f"
+          done
+
+      - name: Validate XML (sitemap)
+        run: |
+          npx --yes xmllint sitemap.xml --noout 2>/dev/null || \
+            python3 -c "import xml.etree.ElementTree as ET; ET.parse('sitemap.xml'); print('  OK: sitemap.xml')"
+
+      - name: Check internal asset references resolve
+        run: |
+          set -e
+          fail=0
+          for html in *.html; do
+            # Extract referenced /js/*, /assets/*, /uploads/*, /styles.css paths and check they exist
+            refs=$(grep -oE '"/[^"]+\.(js|css|svg|png|webp)"' "$html" \
+                   | tr -d '"' | sed 's/?.*//' | sort -u)
+            for ref in $refs; do
+              local_path=".${ref}"
+              if [ ! -f "$local_path" ]; then
+                echo "::error file=$html::References missing $ref"
+                fail=1
+              fi
+            done
+          done
+          if [ $fail -eq 0 ]; then echo "  All asset references resolve."; fi
+          exit $fail
+
+      - name: Smoke-test pages render via static server
+        run: |
+          set -e
+          npx --yes serve -l 4173 . > /tmp/serve.log 2>&1 &
+          sleep 2
+          fail=0
+          for p in / /about.html /pricing.html /contact.html /faq.html /legal.html \
+                   /solutions-residential.html /solutions-commercial.html \
+                   /solutions-industrial.html /solutions-gps.html \
+                   /dashboard.html "/product-detail.html?id=102" \
+                   /robots.txt /sitemap.xml /styles.css; do
+            code=$(curl -sL -o /dev/null -w "%{http_code}" "http://localhost:4173${p}")
+            if [ "$code" != "200" ]; then
+              echo "::error::$p returned $code"
+              fail=1
+            else
+              echo "  200 OK: $p"
+            fi
+          done
+          exit $fail
